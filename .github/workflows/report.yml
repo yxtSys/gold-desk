@@ -43,6 +43,15 @@ jobs:
       - name: 准备配置
         run: cp config.example.json config.json
 
+      - name: 数据源诊断
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          QQ_USER: ${{ secrets.QQ_USER }}
+          QQ_AUTH_CODE: ${{ secrets.QQ_AUTH_CODE }}
+          QQ_TO: ${{ secrets.QQ_TO }}
+        run: node scripts/diag.mjs
+        continue-on-error: true
+
       - name: 刷新事件日历
         run: node scripts/build-calendar.mjs || echo "日历刷新失败，使用缓存"
 
