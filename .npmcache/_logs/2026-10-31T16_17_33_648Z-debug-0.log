@@ -1,0 +1,55 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.16.0
+2 info using node@v24.18.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\21642\OneDrive\Desktop\DSH直播专用\.npmrc
+5 silly config load:file:C:\Users\21642\.npmrc
+6 silly config load:file:C:\Users\21642\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install tweetnacl tweetnacl-sealedbox-js
+8 verbose argv "install" "tweetnacl" "tweetnacl-sealedbox-js" "--registry" "https://registry.npmmirror.com" "--cache" "./.npmcache" "--no-audit" "--no-fund"
+9 verbose logfile logs-max:10 dir:C:\Users\21642\OneDrive\Desktop\DSH直播专用\.npmcache\_logs\2026-10-31T16_17_33_648Z-
+10 verbose logfile C:\Users\21642\OneDrive\Desktop\DSH直播专用\.npmcache\_logs\2026-10-31T16_17_33_648Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly allow-scripts no package.json at prefix Could not read package.json: Error: ENOENT: no such file or directory, open 'C:\Users\21642\OneDrive\Desktop\DSH直播专用\package.json'
+13 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+14 silly idealTree buildDeps
+15 silly fetch manifest tweetnacl@*
+16 silly packumentCache full:https://registry.npmmirror.com/tweetnacl cache-miss
+17 http fetch GET 200 https://registry.npmmirror.com/tweetnacl 57ms (cache miss)
+18 silly packumentCache full:https://registry.npmmirror.com/tweetnacl set size:14279 disposed:false
+19 silly fetch manifest tweetnacl-sealedbox-js@*
+20 silly packumentCache full:https://registry.npmmirror.com/tweetnacl-sealedbox-js cache-miss
+21 http fetch GET 200 https://registry.npmmirror.com/npm 146ms
+22 http fetch GET 200 https://registry.npmmirror.com/tweetnacl-sealedbox-js 90ms (cache miss)
+23 silly packumentCache full:https://registry.npmmirror.com/tweetnacl-sealedbox-js set size:3015 disposed:false
+24 silly placeDep ROOT tweetnacl@1.0.3 OK for:  want: *
+25 silly placeDep ROOT tweetnacl-sealedbox-js@1.2.0 OK for:  want: *
+26 silly fetch manifest blakejs@^1.1.0
+27 silly packumentCache full:https://registry.npmmirror.com/blakejs cache-miss
+28 http fetch GET 200 https://registry.npmmirror.com/blakejs 50ms (cache miss)
+29 silly packumentCache full:https://registry.npmmirror.com/blakejs set size:9385 disposed:false
+30 silly placeDep ROOT blakejs@1.2.1 OK for: tweetnacl-sealedbox-js@1.2.0 want: ^1.1.0
+31 silly reify moves {}
+32 http cache blakejs@https://registry.npmmirror.com/blakejs/-/blakejs-1.2.1.tgz 0ms (cache hit)
+33 http cache tweetnacl@https://registry.npmmirror.com/tweetnacl/-/tweetnacl-1.0.3.tgz 0ms (cache hit)
+34 http cache tweetnacl-sealedbox-js@https://registry.npmmirror.com/tweetnacl-sealedbox-js/-/tweetnacl-sealedbox-js-1.2.0.tgz 0ms (cache hit)
+35 silly tarball no local data for blakejs@https://registry.npmmirror.com/blakejs/-/blakejs-1.2.1.tgz. Extracting by manifest.
+36 silly tarball no local data for tweetnacl@https://registry.npmmirror.com/tweetnacl/-/tweetnacl-1.0.3.tgz. Extracting by manifest.
+37 silly tarball no local data for tweetnacl-sealedbox-js@https://registry.npmmirror.com/tweetnacl-sealedbox-js/-/tweetnacl-sealedbox-js-1.2.0.tgz. Extracting by manifest.
+38 http fetch GET 200 https://cdn.npmmirror.com/packages/tweetnacl/1.0.3/tweetnacl-1.0.3.tgz 135ms (cache miss)
+39 http fetch GET 200 https://cdn.npmmirror.com/packages/blakejs/1.2.1/blakejs-1.2.1.tgz 139ms (cache miss)
+40 http fetch GET 200 https://cdn.npmmirror.com/packages/tweetnacl-sealedbox-js/1.2.0/tweetnacl-sealedbox-js-1.2.0.tgz 237ms (cache miss)
+41 silly ADD node_modules/blakejs
+42 silly ADD node_modules/tweetnacl-sealedbox-js
+43 silly ADD node_modules/tweetnacl
+44 verbose cwd C:\Users\21642\OneDrive\Desktop\DSH直播专用
+45 verbose os Windows_NT 10.0.26200
+46 verbose node v24.18.0
+47 verbose npm  v11.16.0
+48 notice
+48 notice New major version of npm available! 11.16.0 -> 12.2.1
+48 notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+48 notice To update run: npm install -g npm@12.2.1
+48 notice  { force: true, Symbol(proc-log.meta): true }
+49 verbose exit 0
+50 info ok
