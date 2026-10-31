@@ -52,7 +52,15 @@ console.log('');
 console.log('════ 密钥是否注入 ════');
 for (const k of ['DEEPSEEK_API_KEY', 'QQ_USER', 'QQ_AUTH_CODE', 'QQ_TO']) {
   const v = process.env[k];
-  console.log(`${v ? '✓' : '✗'} ${k.padEnd(18)} ${v ? '已注入（长度 ' + v.length + '）' : '缺失'}`);
+  if (!v) { console.log(`✗ ${k.padEnd(18)} 缺失`); continue; }
+  if (k === 'QQ_AUTH_CODE') {
+    // 只打印首尾和长度，够判断填对没有，又不泄露全文
+    console.log(`✓ ${k.padEnd(18)} 长度=${v.length}  掩码=${v.slice(0, 3)}****${v.slice(-2)}`);
+    if (/\s/.test(v)) console.log('   ⚠ 值里含空格！这是最常见的失败原因');
+    if (v.length !== 16) console.log('   ⚠ 长度不是 16，QQ 授权码通常是 16 位');
+  } else {
+    console.log(`✓ ${k.padEnd(18)} 已注入（长度 ${v.length}）`);
+  }
 }
 
 // 诊断步骤本身永远不失败，避免掩盖真正的问题
