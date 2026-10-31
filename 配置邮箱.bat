@@ -1,7 +1,6 @@
 @echo off
-chcp 65001 >nul
 cd /d "%~dp0"
-title é»„é‡‘ç ”ç©¶å° - é‚®ç®±é…ç½®
+title »Æ½ğÑĞ¾¿Ì¨ - ÓÊÏäÅäÖÃ
 node scripts\setup-mail.mjs
 echo.
 pause
