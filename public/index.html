@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>黄金研究台</title>
+<style>
+  :root{
+    --bg:#0a0e15; --panel:#111826; --panel2:#0e1420; --line:#1e293b;
+    --text:#e6edf7; --muted:#8496b0; --gold:#e0b64f; --red:#ff5566; --green:#2ee6a8;
+    --blue:#5aa9ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.5 "Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1560px;margin:0 auto;padding:18px 20px 40px}
+
+  /* 顶栏 */
+  header{display:flex;align-items:center;gap:22px;padding:14px 18px;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px;margin-bottom:14px}
+  .brand{font-size:17px;font-weight:700;letter-spacing:.5px}
+  .brand span{color:var(--gold)}
+  .px{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+  .chg{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .up{color:var(--green)} .down{color:var(--red)} .flat{color:var(--muted)}
+  .badge{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid}
+  .b-short{color:#ff8a94;border-color:#5a2230;background:#2a1218}
+  .b-long{color:#7bf0c4;border-color:#1d4a3c;background:#0e2620}
+  .b-neutral{color:#bcc8da;border-color:#2a3444;background:#161d29}
+  .spacer{flex:1}
+  .meta{color:var(--muted);font-size:12px;text-align:right;line-height:1.7}
+
+  /* 网格 */
+  .grid{display:grid;grid-template-columns:1fr 348px;gap:14px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .panel h3{margin:0 0 12px;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.8px}
+
+  /* 图表 */
+  .chartbox{padding:10px 10px 4px}
+  #chart{width:100%;height:520px;display:block}
+
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th{font-size:11px;color:var(--muted);font-weight:500;text-align:right;padding:5px 4px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  td{font-size:13px;padding:7px 4px;text-align:right;border-bottom:1px solid #161f2d}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:11px;font-weight:700}
+
+  /* 关键位 */
+  .lvl{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-radius:7px;
+    font-variant-numeric:tabular-nums;margin-bottom:3px;background:var(--panel2)}
+  .lvl b{font-weight:600}
+  .lvl small{color:var(--muted);font-size:11px}
+  .lvl.res{border-left:3px solid var(--red)}
+  .lvl.sup{border-left:3px solid var(--green)}
+
+  /* 指标卡 */
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .kpi{background:var(--panel2);border-radius:8px;padding:9px 11px}
+  .kpi .k{font-size:11px;color:var(--muted)}
+  .kpi .v{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+  .bar{height:4px;border-radius:3px;background:#1c2634;margin-top:7px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:3px}
+
+  footer{margin-top:14px;color:var(--muted);font-size:11.5px;display:flex;gap:18px;flex-wrap:wrap}
+  .err{color:#ffb020}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">黄金<span>研究台</span></div>
+    <div class="px" id="px">—</div>
+    <div class="chg" id="chg">—</div>
+    <div class="badge b-neutral" id="bias">—</div>
+    <div class="spacer"></div>
+    <div class="meta">
+      <div id="ts">—</div>
+      <div id="src">—</div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div>
+      <div class="panel chartbox"><canvas id="chart"></canvas></div>
+      <div class="panel" style="margin-top:14px">
+        <h3>关键位 · 近到远</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div><div style="color:var(--red);font-size:12px;margin-bottom:6px">上方阻力</div><div id="res"></div></div>
+          <div><div style="color:var(--green);font-size:12px;margin-bottom:6px">下方支撑</div><div id="sup"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <h3>多周期矩阵</h3>
+        <table id="tfs"></table>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3>日线状态</h3>
+        <div class="kpis" id="kpis"></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3>位置</h3>
+        <div id="pos"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span id="f1">—</span><span id="f2"></span><span id="f3"></span>
+    <span class="err" id="ferr"></span>
+  </footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const f = (v, d = 2) => (v == null || Number.isNaN(v) ? '—' : Number(v).toFixed(d));
+const pct = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + Number(v).toFixed(2) + '%');
+const cls = (v) => (v > 0 ? 'up' : v < 0 ? 'down' : 'flat');
+
+let SNAP = null;
+
+async function load() {
+  try {
+    const r = await fetch('/api/snapshot' + (SNAP ? '?force=0' : ''));
+    SNAP = await r.json();
+    render(SNAP);
+  } catch (e) { $('ferr').textContent = '连接失败：' + e.message; }
+}
+
+function render(s) {
+  // 顶栏
+  const a = s.analysis;
+  const dayChg = s.dayChg;
+  const dayPct = s.dayChgPct;
+
+  $('px').textContent = f(s.price);
+  $('chg').innerHTML = `<span class="${cls(dayChg)}">${dayChg >= 0 ? '+' : ''}${f(dayChg)} (${pct(dayPct)})</span>`;
+  const b = $('bias');
+  b.textContent = `${s.biasLabel}  ${s.bias.toFixed(2)}`;
+  b.className = 'badge ' + (s.bias <= -0.3 ? 'b-short' : s.bias >= 0.3 ? 'b-long' : 'b-neutral');
+  $('ts').textContent = s.tsLocal;
+  $('src').textContent = `现货 ${f(s.price)} · COMEX ${f(s.refPrice)} · 基差 ${pct(s.basisPct)}`;
+
+  // 周期矩阵
+  $('tfs').innerHTML = `<tr><th>周期</th><th>趋势</th><th>RSI</th><th>MA20</th><th>ATR</th></tr>` +
+    Object.values(s.tfs).map((t) => {
+      const c = t.trend.includes('空') ? 'tag b-short' : t.trend.includes('多') ? 'tag b-long' : 'tag b-neutral';
+      return `<tr><td>${t.label}</td><td><span class="${c}">${t.trend}</span></td>
+        <td>${f(t.rsi14, 1)}</td><td>${f(t.ma20)}</td><td>${f(t.atr14)}</td></tr>`;
+    }).join('');
+
+  // KPI
+  const rsi = a.rsi14;
+  const rsiColor = rsi < 30 ? 'var(--green)' : rsi > 70 ? 'var(--red)' : 'var(--gold)';
+  $('kpis').innerHTML = [
+    ['RSI14', f(rsi, 1), rsiColor, rsi],
+    ['ATR14', f(a.atr14), 'var(--blue)', Math.min(a.atr14 / 100 * 100 * 2, 100)],
+    ['年化波动', f(a.vol20, 1) + '%', 'var(--gold)', Math.min(a.vol20 * 4, 100)],
+    ['MA20 偏离', pct(a.ma20DevPct), a.ma20DevPct < 0 ? 'var(--red)' : 'var(--green)', Math.min(Math.abs(a.ma20DevPct) * 10, 100)],
+  ].map(([k, v, c, w]) => `<div class="kpi"><div class="k">${k}</div>
+     <div class="v" style="color:${c}">${v}</div>
+     <div class="bar"><i style="width:${Math.max(2, Math.min(100, w))}%;background:${c}"></i></div></div>`).join('');
+
+  // 位置
+  $('pos').innerHTML = [
+    ['距年内高', pct(a.fromYearHighPct), a.fromYearHighPct < 0 ? 'var(--red)' : ''],
+    ['距年内低', pct(a.fromYearLowPct), 'var(--green)'],
+    ['20日涨跌', pct(a.ret20Pct), a.ret20Pct < 0 ? 'var(--red)' : 'var(--green)'],
+  ].map(([k, v, c]) => `<div class="lvl"><span>${k}</span><b style="color:${c || 'var(--text)'}">${v}</b></div>`).join('') +
+    `<div class="lvl" style="margin-top:6px"><span>年内高 / 低</span><small>${f(a.yearHigh)} / ${f(a.yearLow)}</small></div>`;
+
+  // 关键位
+  const mk = (arr, isRes) => arr.map((c) => {
+    const d = ((c.p / s.refPrice - 1) * 100);
+    return `<div class="lvl ${isRes ? 'res' : 'sup'}"><span><b>${f(c.p)}</b> <small>触及${c.count}</small></span>
+      <small>${pct(d)}</small></div>`;
+  }).join('');
+  $('res').innerHTML = mk(s.levels.resistance, true);
+  $('sup').innerHTML = mk(s.levels.support, false);
+
+  $('f1').textContent = `枢轴 P ${f(s.levels.pivots.P)} · R1 ${f(s.levels.pivots.R1)} · S1 ${f(s.levels.pivots.S1)}`;
+  $('f2').textContent = `布林 上${f(s.levels.boll?.up)} 中${f(s.levels.boll?.mid)} 下${f(s.levels.boll?.dn)}`;
+  $('f3').textContent = `交叉校验 新浪XAU ${f(s.crossCheck.sinaXAU)} · COMEX ${f(s.crossCheck.sinaGC)} · 上海金 ${f(s.crossCheck.sinaSGE)} 元/克`;
+  $('ferr').textContent = s.errors?.length ? '⚠ ' + s.errors.join(' | ') : '';
+
+  drawChart(s);
+  $('f1').title = '数据源：gold-api 现货 / Binance PAXG 历史 / 新浪交叉校验';
+}
+
+// ---------- K线图 ----------
+function drawChart(s) {
+  const cv = $('chart');
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  const g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, W, H);
+
+  const bars = s.tfs['1d'].bars.slice(-120);
+  if (!bars.length) return;
+  const padR = 92, padT = 16, padB = 26, padL = 8;
+  const cw = W - padL - padR, ch = H - padT - padB;
+
+  const levels = [...s.levels.resistance.slice(0, 4), ...s.levels.support.slice(0, 4)].map((x) => x.p);
+  let hi = Math.max(...bars.map((b) => b.h), ...levels);
+  let lo = Math.min(...bars.map((b) => b.l), ...levels);
+  const padY = (hi - lo) * 0.06; hi += padY; lo -= padY;
+
+  const X = (i) => padL + (i / (bars.length - 1)) * cw;
+  const Y = (p) => padT + (1 - (p - lo) / (hi - lo)) * ch;
+
+  // 网格
+  g.strokeStyle = '#161f2d'; g.lineWidth = 1; g.font = '11px ui-monospace,monospace';
+  g.fillStyle = '#5c6b82';
+  for (let i = 0; i <= 4; i++) {
+    const p = lo + (hi - lo) * (i / 4);
+    const y = Y(p);
+    g.beginPath(); g.moveTo(padL, y); g.lineTo(W - padR, y); g.stroke();
+    g.fillText(p.toFixed(0), W - padR + 8, y + 4);
+  }
+
+  // 关键位横线
+  for (const lv of s.levels.resistance.slice(0, 4)) {
+    const y = Y(lv.p); if (y < padT || y > padT + ch) continue;
+    g.strokeStyle = 'rgba(255,85,102,.35)'; g.setLineDash([4, 4]);
+    g.beginPath(); g.moveTo(padL, y); g.lineTo(W - padR, y); g.stroke(); g.setLineDash([]);
+    g.fillStyle = 'rgba(255,85,102,.85)'; g.fillText(lv.p.toFixed(0), W - padR + 8, y - 4);
+  }
+  for (const lv of s.levels.support.slice(0, 4)) {
+    const y = Y(lv.p); if (y < padT || y > padT + ch) continue;
+    g.strokeStyle = 'rgba(46,230,168,.30)'; g.setLineDash([4, 4]);
+    g.beginPath(); g.moveTo(padL, y); g.lineTo(W - padR, y); g.stroke(); g.setLineDash([]);
+    g.fillStyle = 'rgba(46,230,168,.85)'; g.fillText(lv.p.toFixed(0), W - padR + 8, y + 12);
+  }
+
+  // K线
+  const bw = Math.max(1.5, cw / bars.length * 0.62);
+  bars.forEach((b, i) => {
+    const up = b.c >= b.o;
+    const col = up ? '#2ee6a8' : '#ff5566';
+    const x = X(i);
+    g.strokeStyle = col; g.fillStyle = col;
+    g.beginPath(); g.moveTo(x, Y(b.h)); g.lineTo(x, Y(b.l)); g.stroke();
+    const y1 = Y(Math.max(b.o, b.c)), y2 = Y(Math.min(b.o, b.c));
+    g.fillRect(x - bw / 2, y1, bw, Math.max(1, y2 - y1));
+  });
+
+  // 均线
+  const drawMA = (n, color) => {
+    g.strokeStyle = color; g.lineWidth = 1.6; g.beginPath();
+    let started = false;
+    bars.forEach((b, i) => {
+      if (i < n - 1) return;
+      const seg = bars.slice(i - n + 1, i + 1).reduce((a, x) => a + x.c, 0) / n;
+      const x = X(i), y = Y(seg);
+      if (!started) { g.moveTo(x, y); started = true; } else g.lineTo(x, y);
+    });
+    g.stroke(); g.lineWidth = 1;
+  };
+  drawMA(20, 'rgba(224,182,79,.9)');
+  drawMA(60, 'rgba(90,169,255,.85)');
+
+  // 最新价
+  const last = bars.at(-1);
+  const yl = Y(last.c);
+  g.strokeStyle = '#e0b64f'; g.setLineDash([2, 3]);
+  g.beginPath(); g.moveTo(padL, yl); g.lineTo(W - padR, yl); g.stroke(); g.setLineDash([]);
+  g.fillStyle = '#e0b64f'; g.fillRect(W - padR + 2, yl - 9, 86, 18);
+  g.fillStyle = '#0a0e15'; g.font = 'bold 12px ui-monospace,monospace';
+  g.fillText(last.c.toFixed(1), W - padR + 8, yl + 5);
+  g.font = '11px ui-monospace,monospace';
+
+  // 图例
+  g.fillStyle = 'rgba(224,182,79,.9)'; g.fillText('MA20', padL + 4, padT + 12);
+  g.fillStyle = 'rgba(90,169,255,.9)'; g.fillText('MA60', padL + 48, padT + 12);
+  g.fillStyle = '#5c6b82'; g.fillText(bars[0].date.slice(0, 10) + ' → ' + bars.at(-1).date.slice(0, 10), padL + 92, padT + 12);
+}
+
+window.addEventListener('resize', () => SNAP && drawChart(SNAP));
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>

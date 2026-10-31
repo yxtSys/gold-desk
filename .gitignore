@@ -1,0 +1,18 @@
+# ---- 私有：绝不进仓库 ----
+secrets.json
+config.json
+config.local.json
+
+# ---- 个人资料 ----
+黄金知识库/
+
+# ---- 运行产物 ----
+data/
+media/
+logs*.txt
+.chrome-profile/
+node_modules/
+
+# ---- 系统 ----
+.DS_Store
+Thumbs.db

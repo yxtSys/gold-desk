@@ -1,0 +1,30 @@
+{
+  "email": {
+    "enabled": false,
+    "smtpHost": "smtp.qq.com",
+    "smtpPort": 465,
+    "user": "",
+    "authCode": "",
+    "to": ""
+  },
+  "alerts": {
+    "dayMovePct": 2,
+    "rsiLow": 25,
+    "rsiHigh": 75,
+    "nearPct": 0.35,
+    "maDevPct": 6,
+    "cooldownHours": 4,
+    "pollSeconds": 60,
+    "reportMinutes": 15
+  },
+  "account": {
+    "equity": 1000,
+    "riskPct": 1,
+    "maxLeverage": 20,
+    "contractOz": 100
+  },
+  "llm": {
+    "enabled": true,
+    "everyN": 4
+  }
+}

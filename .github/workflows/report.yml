@@ -1,0 +1,60 @@
+name: 黄金研究台
+
+on:
+  schedule:
+    # 每 15 分钟。GitHub 的 cron 在高峰期会延迟 10-40 分钟，这是平台限制。
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: '强制发一封（忽略"无变化"跳过）'
+        type: boolean
+        default: true
+
+concurrency:
+  group: gold-desk
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 状态持久化：报告状态、COT 缓存、事件日历
+      # key 每次唯一（run_id），restore-keys 前缀命中最近一次缓存
+      - name: 恢复状态
+        uses: actions/cache@v4
+        with:
+          path: data
+          key: state-${{ github.run_id }}
+          restore-keys: |
+            state-
+
+      - name: 准备配置
+        run: cp config.example.json config.json
+
+      - name: 刷新事件日历
+        run: node scripts/build-calendar.mjs || echo "日历刷新失败，使用缓存"
+
+      - name: 生成并发送报告
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          QQ_USER: ${{ secrets.QQ_USER }}
+          QQ_AUTH_CODE: ${{ secrets.QQ_AUTH_CODE }}
+          QQ_TO: ${{ secrets.QQ_TO }}
+        run: |
+          if [ "${{ inputs.force }}" = "true" ]; then
+            node scripts/report15.mjs --send --force
+          else
+            node scripts/report15.mjs --send
+          fi
