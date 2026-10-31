@@ -18,3 +18,4 @@ node_modules/
 Thumbs.db
 .gh_token
 .npmcache/
+.askpass.sh
