@@ -3,6 +3,44 @@
 本地运行的黄金行情研究台 + 告警推送。盯着 COMEX 黄金与现货 XAU，按你知识库里的框架算关键位、
 多周期方向和技术状态，命中条件就发到 QQ 邮箱。
 
+## 部署到 GitHub（全云端运行）
+
+本机不需要开机。整套逻辑跑在 GitHub Actions 上，每 15 分钟一次。
+
+### 步骤
+
+1. 在 GitHub 新建一个**空仓库**（**必须选 Public**，私有仓库的 Actions 额度撑不住 96 次/天）
+2. 双击 `推送到GitHub.bat`，粘贴仓库地址
+3. 打开仓库的 **Settings → Secrets and variables → Actions**，添加 4 个 Secret：
+
+| Secret | 内容 |
+|---|---|
+| `DEEPSEEK_API_KEY` | DeepSeek 的 API Key |
+| `QQ_USER` | 你的 QQ 邮箱 |
+| `QQ_AUTH_CODE` | 16 位授权码 |
+| `QQ_TO` | 收件邮箱 |
+
+4. 去 **Actions** 页面，点 `黄金研究台` → `Run workflow` 手动跑一次，确认成功
+5. 之后它会按 `*/15 * * * *` 自动运行
+
+### 三个必须知道的限制
+
+1. **cron 会延迟。** GitHub 免费 runner 的定时任务在高峰期会延迟 10-40 分钟。
+   名义上是 15 分钟一次，实际可能是 20-40 分钟。要精确到分钟只能用云服务器。
+2. **状态靠缓存。** Actions 每次都是全新环境，"上次发过什么"存在 Actions Cache 里。
+   缓存 7 天不用会被清理，那时会重新发一封（不会重复刷屏）。
+3. **公开仓库 = 代码公开。** 策略逻辑、指标参数所有人都能看到。密钥在 Secrets 里，不会泄露。
+
+### 本地运行（可选）
+
+想在本地调试，仍然可以：
+
+```bash
+node scripts/report15.mjs --preview   # 只生成预览
+node scripts/report15.mjs --send      # 发邮件（读本地 config.json + secrets.json）
+node server.mjs                       # 起看板 http://127.0.0.1:8848
+```
+
 ## 真实持仓（CFTC COT）
 
 比"新闻情绪"可靠得多——这是交易所实际登记的投机盘与套保盘持仓。
